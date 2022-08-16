@@ -7,7 +7,7 @@ data "aws_cloudfront_cache_policy" "caching_optimized_cache_policy" {
 }
 
 data "aws_cloudfront_origin_request_policy" "cors_s3_origin_request_policy" {
-  name = "Managed-CORS-S3Origin"
+  name = "Managed-CORS-CustomOrigin"
 }
 
 resource "aws_cloudfront_function" "set_response_headers" {
@@ -19,29 +19,26 @@ resource "aws_cloudfront_function" "set_response_headers" {
 
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
-    domain_name = module.s3website_region1.bucket_regional_domain_name
-    origin_id   = module.s3website_region1.id
+    domain_name = aws_globalaccelerator_accelerator.globalaccelerator.dns_name
+    origin_id   = aws_globalaccelerator_accelerator.globalaccelerator.id
 
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path
+    custom_origin_config {
+      http_port = 80
+      https_port = 443
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols = ["TLSv1.2"]
     }
   }
 
   enabled             = true
   is_ipv6_enabled     = true
-  comment             = "${terraform.workspace}-site-${random_pet.deployment.id}"
+  comment             = "${terraform.workspace}-multi-region-site-${random_pet.deployment.id}"
   default_root_object = "index.html"
-
-  logging_config {
-    include_cookies = false
-    bucket          = module.s3website_region1.bucket_domain_name
-    prefix          = "site_logs"
-  }
 
   default_cache_behavior {
     allowed_methods          = ["GET", "HEAD", "OPTIONS"]
     cached_methods           = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id         = module.s3website_region1.id
+    target_origin_id         = aws_globalaccelerator_accelerator.globalaccelerator.id
     cache_policy_id          = data.aws_cloudfront_cache_policy.caching_optimized_cache_policy.id
     origin_request_policy_id = data.aws_cloudfront_origin_request_policy.cors_s3_origin_request_policy.id
     viewer_protocol_policy   = "redirect-to-https"
@@ -61,8 +58,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   tags = {
-    environment = terraform.workspace
-    deployment_id  = random_pet.deployment.id
+    environment   = terraform.workspace
+    deployment_id = random_pet.deployment.id
   }
 
   viewer_certificate {

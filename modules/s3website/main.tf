@@ -12,7 +12,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "website_bucket" {
-  bucket = "${terraform.workspace}-${var.aws_region}-site-${var.deployment_id}"
+  bucket = "${terraform.workspace}-multi-region-site-${var.aws_region}-${var.deployment_id}"
 
   tags = {
     environment = terraform.workspace
@@ -35,4 +35,12 @@ data "aws_iam_policy_document" "cloudfront_bucket_policy" {
 resource "aws_s3_bucket_policy" "this" {
   bucket = aws_s3_bucket.website_bucket.id
   policy = data.aws_iam_policy_document.cloudfront_bucket_policy.json
+}
+
+resource "aws_s3_bucket_website_configuration" "website_configuration" { 
+  bucket = aws_s3_bucket.website_bucket.id
+
+  index_document {
+    suffix = "index.html"
+  }
 }
