@@ -7,7 +7,14 @@ data "aws_cloudfront_cache_policy" "caching_optimized_cache_policy" {
 }
 
 data "aws_cloudfront_origin_request_policy" "cors_s3_origin_request_policy" {
-  name = "Managed-CORS-CustomOrigin"
+  name = "Managed-CORS-S3Origin"
+}
+
+resource "aws_cloudfront_function" "conditional_redirect" {
+  name    = "${terraform.workspace}-conditional-redirect-${random_pet.deployment.id}"
+  runtime = "cloudfront-js-1.0"
+  publish = true
+  code    = file("./javascript/conditional-redirect.js")
 }
 
 resource "aws_cloudfront_function" "set_response_headers" {
@@ -19,14 +26,20 @@ resource "aws_cloudfront_function" "set_response_headers" {
 
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
-    domain_name = aws_globalaccelerator_accelerator.globalaccelerator.dns_name
-    origin_id   = aws_globalaccelerator_accelerator.globalaccelerator.id
+    domain_name = module.s3website_region1.bucket_regional_domain_name
+    origin_id   = module.s3website_region1.id
 
-    custom_origin_config {
-      http_port = 80
-      https_port = 443
-      origin_protocol_policy = "https-only"
-      origin_ssl_protocols = ["TLSv1.2"]
+    s3_origin_config {
+      origin_access_identity = aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path
+    }
+  }
+
+  origin {
+    domain_name = module.s3website_region2.bucket_regional_domain_name
+    origin_id   = module.s3website_region2.id
+
+    s3_origin_config {
+      origin_access_identity = aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path
     }
   }
 
@@ -38,7 +51,27 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   default_cache_behavior {
     allowed_methods          = ["GET", "HEAD", "OPTIONS"]
     cached_methods           = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id         = aws_globalaccelerator_accelerator.globalaccelerator.id
+    target_origin_id         = module.s3website_region1.id
+    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_optimized_cache_policy.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.cors_s3_origin_request_policy.id
+    viewer_protocol_policy   = "redirect-to-https"
+    compress                 = true
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.conditional_redirect.arn
+    }
+    function_association {
+      event_type   = "viewer-response"
+      function_arn = aws_cloudfront_function.set_response_headers.arn
+    }
+  }
+
+  # Cache behavior with precedence 0
+  ordered_cache_behavior {
+    path_pattern             = "/east/*"
+    allowed_methods          = ["GET", "HEAD", "OPTIONS"]
+    cached_methods           = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id         = module.s3website_region2.id
     cache_policy_id          = data.aws_cloudfront_cache_policy.caching_optimized_cache_policy.id
     origin_request_policy_id = data.aws_cloudfront_origin_request_policy.cors_s3_origin_request_policy.id
     viewer_protocol_policy   = "redirect-to-https"

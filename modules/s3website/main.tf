@@ -15,32 +15,24 @@ resource "aws_s3_bucket" "website_bucket" {
   bucket = "${terraform.workspace}-multi-region-site-${var.aws_region}-${var.deployment_id}"
 
   tags = {
-    environment = terraform.workspace
-    deployment_id  = var.deployment_id
+    environment   = terraform.workspace
+    deployment_id = var.deployment_id
   }
 }
 
-data "aws_iam_policy_document" "cloudfront_bucket_policy" {
-  statement {
-    actions   = ["s3:GetObject"]
-    resources = ["${aws_s3_bucket.website_bucket.arn}/*"]
-
-    principals {
-      type        = "CanonicalUser"
-      identifiers = [var.s3_canonical_user_id]
-    }
-  }
-}
-
-resource "aws_s3_bucket_policy" "this" {
-  bucket = aws_s3_bucket.website_bucket.id
-  policy = data.aws_iam_policy_document.cloudfront_bucket_policy.json
-}
-
-resource "aws_s3_bucket_website_configuration" "website_configuration" { 
+resource "aws_s3_bucket_public_access_block" "public_access_block" {
   bucket = aws_s3_bucket.website_bucket.id
 
-  index_document {
-    suffix = "index.html"
-  }
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_object" "index_page" {
+  bucket       = aws_s3_bucket.website_bucket.id
+  key          = var.object_key
+  source       = var.object_source
+  etag         = filemd5(var.object_source)
+  content_type = "text/html"
 }

@@ -20,6 +20,8 @@ module "s3website_region1" {
   aws_region           = var.aws_region1
   deployment_id        = random_pet.deployment.id
   environment          = terraform.workspace
+  object_key           = "index.html"
+  object_source        = "./html/index.html"
   s3_canonical_user_id = aws_cloudfront_origin_access_identity.origin_access_identity.s3_canonical_user_id
 }
 
@@ -28,5 +30,7 @@ module "s3website_region2" {
   aws_region           = var.aws_region2
   deployment_id        = random_pet.deployment.id
   environment          = terraform.workspace
+  object_key           = "east/index.html"
+  object_source        = "./html/east/index.html"
   s3_canonical_user_id = aws_cloudfront_origin_access_identity.origin_access_identity.s3_canonical_user_id
 }
