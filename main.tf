@@ -16,17 +16,17 @@ resource "random_pet" "deployment" {
 }
 
 module "s3website_region1" {
-  source               = "./modules/s3website"
-  aws_region           = var.aws_region1
-  deployment_id        = random_pet.deployment.id
-  environment          = terraform.workspace
-  s3_canonical_user_id = aws_cloudfront_origin_access_identity.origin_access_identity.s3_canonical_user_id
+  source                            = "./modules/s3website"
+  aws_region                        = var.aws_region1
+  deployment_id                     = random_pet.deployment.id
+  environment                       = terraform.workspace
+  set_response_headers_function_arn = aws_cloudfront_function.set_response_headers.arn
 }
 
 module "s3website_region2" {
-  source               = "./modules/s3website"
-  aws_region           = var.aws_region2
-  deployment_id        = random_pet.deployment.id
-  environment          = terraform.workspace
-  s3_canonical_user_id = aws_cloudfront_origin_access_identity.origin_access_identity.s3_canonical_user_id
+  source                            = "./modules/s3website"
+  aws_region                        = var.aws_region2
+  deployment_id                     = random_pet.deployment.id
+  environment                       = terraform.workspace
+  set_response_headers_function_arn = aws_cloudfront_function.set_response_headers.arn
 }

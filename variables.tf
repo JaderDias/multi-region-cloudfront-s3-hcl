@@ -7,3 +7,7 @@ variable "aws_region2" {
   type    = string
   default = "eu-central-1"
 }
+
+variable "domain" {
+  type = string
+}

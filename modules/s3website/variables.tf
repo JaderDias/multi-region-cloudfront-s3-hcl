@@ -1,18 +1,18 @@
 variable "aws_region" {
-  type = string
+  type        = string
   description = "AWS region"
 }
 
 variable "deployment_id" {
-  type    = string
+  type        = string
   description = "a random string to distinguish different deployments"
 }
 
 variable "environment" {
-  type = string
+  type        = string
   description = "one of dev, staging, prod"
 }
 
-variable "s3_canonical_user_id" {
+variable "set_response_headers_function_arn" {
   type = string
 }

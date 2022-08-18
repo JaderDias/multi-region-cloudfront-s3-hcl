@@ -15,5 +15,5 @@ $ terraform workspace new dev
 
 $ terraform init
 
-$ terraform apply --var "aws_region1=us-east-1" --var "aws_region2=eu-central-1"
+$ terraform apply --var "aws_region1=us-east-1" --var "aws_region2=eu-central-1" --var "domain=example.com"
 ```
