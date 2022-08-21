@@ -20,6 +20,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     }
   }
 
+  aliases = [var.domain_name]
+
   enabled             = true
   is_ipv6_enabled     = true
   comment             = "${var.environment}-site-${var.aws_region}-${var.deployment_id}"
@@ -53,6 +55,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn = var.certificate_arn
+    ssl_support_method  = "sni-only"
   }
 }

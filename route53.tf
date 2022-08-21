@@ -2,34 +2,26 @@ resource "aws_route53_zone" "main" {
   name = var.domain
 }
 
-resource "aws_route53_record" "region1" {
-  for_each       = toset(["AN", "NA", "SA"]) # Antartica, North America, South America
+resource "aws_route53_record" "route53_record" {
+  for_each = {
+    AF = module.s3website_region2 // Africa
+    AN = module.s3website_region1 // Antarctica
+    AS = module.s3website_region2 // Asia
+    EU = module.s3website_region2 // Europe
+    NA = module.s3website_region1 // North America
+    OC = module.s3website_region2 // Oceania
+    SA = module.s3website_region1 // South America
+  }
   zone_id        = aws_route53_zone.main.zone_id
-  name           = "www.${aws_route53_zone.main.name}"
+  name           = "www"
   type           = "A"
-  set_identifier = "region1-${each.key}"
+  set_identifier = each.key
   geolocation_routing_policy {
     continent = each.key
   }
   alias {
-    name                   = module.s3website_region1.cloudfront_distribution.domain_name
-    zone_id                = module.s3website_region1.cloudfront_distribution.hosted_zone_id
-    evaluate_target_health = false
-  }
-}
-
-resource "aws_route53_record" "region2" {
-  for_each       = toset(["AF", "AS", "EU", "OC"]) # Africa, Asia, Europe, Oceania
-  zone_id        = aws_route53_zone.main.zone_id
-  name           = "www.${aws_route53_zone.main.name}"
-  type           = "A"
-  set_identifier = "region2-${each.key}"
-  geolocation_routing_policy {
-    continent = each.key
-  }
-  alias {
-    name                   = module.s3website_region2.cloudfront_distribution.domain_name
-    zone_id                = module.s3website_region2.cloudfront_distribution.hosted_zone_id
+    name                   = each.value.cloudfront_distribution.domain_name
+    zone_id                = each.value.cloudfront_distribution.hosted_zone_id
     evaluate_target_health = false
   }
 }

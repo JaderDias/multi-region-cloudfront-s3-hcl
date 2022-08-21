@@ -7,10 +7,6 @@ terraform {
   }
 }
 
-provider "aws" {
-  region = var.aws_region
-}
-
 resource "aws_s3_bucket" "website_bucket" {
   bucket = "${terraform.workspace}-multi-region-site-${var.aws_region}-${var.deployment_id}"
 
