@@ -1,3 +1,16 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "4.17.1"
+    }
+  }
+}
+
+provider "aws" {
+  region = var.aws_region
+}
+
 data "archive_file" "lambda_zip" {
   type        = "zip"
   source_dir  = var.source_dir

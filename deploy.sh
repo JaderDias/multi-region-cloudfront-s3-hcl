@@ -1,9 +1,10 @@
 #!/bin/bash
 environment="$1"
-if [ -z "$environment" ]
-then
-    echo "Usage: deploy.sh <environment>"
-    exit 1
+region1="$2"
+region2="$3"
+if [[ -z "$environment" ]] || [[ -z "$region1" ]] || [[ -z "$region2" ]]; then
+  echo "Usage: $0 <environment> <aws-region1> <aws-region2>"
+  exit 1
 fi
 
 echo -e "\n+++++ Starting deployment +++++\n"
@@ -35,6 +36,6 @@ fi
 terraform workspace new $environment
 terraform workspace select $environment
 
-terraform apply --auto-approve
+terraform apply --var "aws_region1=$region1" --var "aws_region2=$region2" --auto-approve
 
 echo -e "\n+++++ Deployment done +++++\n"
