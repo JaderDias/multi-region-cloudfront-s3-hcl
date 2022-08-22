@@ -11,9 +11,5 @@ This project uses Terraform to create a static website that is simulteanously de
 # deployment instructions
 
 ```
-$ terraform workspace new dev
-
-$ terraform init
-
-$ terraform apply --var "aws_region1=us-east-1" --var "aws_region2=eu-central-1"
+$ deploy.sh dev
 ```
