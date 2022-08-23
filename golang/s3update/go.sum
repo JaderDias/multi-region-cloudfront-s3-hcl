@@ -1,3 +1,5 @@
+github.com/JaderDias/limiter v0.0.0-20220814090357-a195005b05c4 h1:HZGTLkNG/LHA/qf39AVzjdyGEMGHbNc2AhfmTGm02EE=
+github.com/JaderDias/limiter v0.0.0-20220814090357-a195005b05c4/go.mod h1:kCY3Ui6myc8xrhAYdiq0X/EE62nt2FGhIjiMhtZDboU=
 github.com/aws/aws-lambda-go v1.32.0 h1:i8MflawW1hoyYp85GMH7LhvAs4cqzL7LOS6fSv8l2KM=
 github.com/aws/aws-lambda-go v1.32.0/go.mod h1:IF5Q7wj4VyZyUFnZ54IQqeWtctHQ9tz+KhcbDenr220=
 github.com/aws/aws-sdk-go-v2 v1.16.5 h1:Ah9h1TZD9E2S1LzHpViBO3Jz9FPL5+rmflmb8hXirtI=

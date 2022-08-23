@@ -3,6 +3,7 @@ module example.com/s3update
 go 1.18
 
 require (
+	github.com/JaderDias/limiter v0.0.0-20220814090357-a195005b05c4
 	github.com/aws/aws-lambda-go v1.32.0
 	github.com/aws/aws-sdk-go-v2/config v1.15.11
 	github.com/aws/aws-sdk-go-v2/service/athena v1.15.3

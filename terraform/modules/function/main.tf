@@ -11,7 +11,7 @@ resource "aws_lambda_function" "myfunc" {
   handler          = var.lambda_handler
   source_code_hash = filebase64sha256(data.archive_file.lambda_zip.output_path)
   runtime          = "go1.x"
-  timeout          = 30
+  timeout          = 540
   tags             = var.tags
 
   environment {
