@@ -1,6 +1,4 @@
-variable "domain_name" {
-  type        = string
-  description = "cloudfront domain name"
+variable "cloudfront_distribution" {
 }
 variable "function_name" {
   type = string

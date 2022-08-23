@@ -16,7 +16,7 @@ resource "aws_lambda_function" "myfunc" {
 
   environment {
     variables = {
-      DOMAIN_NAME = var.domain_name
+      DOMAIN_NAME                = var.cloudfront_distribution.domain_name
     }
   }
 

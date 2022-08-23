@@ -24,7 +24,7 @@ module "s3website" {
 
 module "s3update_function" {
   source         = "./modules/function"
-  domain_name    = aws_cloudfront_distribution.s3_distribution.domain_name
+  cloudfront_distribution    = aws_cloudfront_distribution.s3_distribution
   function_name  = "${terraform.workspace}_s3update_${random_pet.deployment.id}"
   lambda_handler = "s3update"
   source_dir     = "../bin/s3update"
