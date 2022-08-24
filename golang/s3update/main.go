@@ -35,7 +35,7 @@ func Request(domainName, uri string) {
 				}
 
 				client := GetHttpClient(ip)
-				response, err := client.Head(uri)
+				response, err := client.Get(uri)
 				if err != nil {
 					return fmt.Errorf("request for %s ip %s failed: %s", pop, ip, err)
 				}
