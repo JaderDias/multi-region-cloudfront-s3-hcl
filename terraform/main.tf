@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "4.17.1"
+      version = "4.27.0"
     }
   }
 }
@@ -23,11 +23,11 @@ module "s3website" {
 }
 
 module "s3update_function" {
-  source         = "./modules/function"
-  cloudfront_distribution    = aws_cloudfront_distribution.s3_distribution
-  function_name  = "${terraform.workspace}_s3update_${random_pet.deployment.id}"
-  lambda_handler = "s3update"
-  source_dir     = "../bin/s3update"
+  source                  = "./modules/function"
+  cloudfront_distribution = aws_cloudfront_distribution.s3_distribution
+  function_name           = "${terraform.workspace}_s3update_${random_pet.deployment.id}"
+  lambda_handler          = "s3update"
+  source_dir              = "../bin/s3update"
   tags = {
     environment   = terraform.workspace
     deployment_id = random_pet.deployment.id

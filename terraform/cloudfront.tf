@@ -29,6 +29,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
   enabled             = true
   is_ipv6_enabled     = true
+  http_version        = "http3"
   comment             = "${terraform.workspace}-multi-region-site-${random_pet.deployment.id}"
   default_root_object = "index.html"
 
