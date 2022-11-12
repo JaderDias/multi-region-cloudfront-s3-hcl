@@ -45,6 +45,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
       event_type   = "viewer-response"
       function_arn = aws_cloudfront_function.set_response_headers.arn
     }
+
+    lambda_function_association {
+      event_type   = "origin-response"   
+      include_body = false
+      lambda_arn   = module.lambda-at-edge.arn
+    }
   }
 
   price_class = "PriceClass_100"
