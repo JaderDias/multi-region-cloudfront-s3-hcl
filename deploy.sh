@@ -1,8 +1,30 @@
 #!/bin/bash
 environment="$1"
+architecture="$2"
 if [ -z "$environment" ]
 then
-    echo "Usage: deploy.sh <environment>"
+    echo "Usage: deploy.sh <environment> <architecture>"
+    echo "architecture must be 'arm64' or 'x86_64'"
+    exit 1
+fi
+
+if [ -z "$architecture" ]
+then
+    echo "Usage: deploy.sh <environment> <architecture>"
+    echo "architecture must be 'arm64' or 'x86_64'"
+    exit 1
+fi
+
+compiler_arch=$architecture
+if [ $architecture = "arm64" ]
+then
+    compiler_arch="aarch64"
+fi
+
+rustup target add "$compiler_arch-unknown-linux-musl"
+if [ $? -ne 0 ]
+then
+    echo "rustup target add failed"
     exit 1
 fi
 
@@ -10,18 +32,22 @@ echo -e "\n+++++ Starting deployment +++++\n"
 
 rm -rf ./bin
 mkdir ./bin
-mkdir ./bin/s3update
+mkdir ./bin/render
 
-echo "+++++ build go packages +++++"
+echo "+++++ build rust packages +++++"
 
-cd golang/s3update
-go get
-env GOOS=linux GOARCH=amd64 go build -o ../../bin/s3update/s3update
+cd rust/render
+
+TARGET_CC="$compiler_arch-linux-musl-gcc" \
+RUSTFLAGS="-C linker=$compiler_arch-linux-musl-gcc" \
+cargo build --release --target "$compiler_arch-unknown-linux-musl"
 if [ $? -ne 0 ]
 then
-    echo "build s3update packages failed"
+    echo "cargo build failed"
     exit 1
 fi
+
+cp "target/$compiler_arch-unknown-linux-musl/release/render" ../../bin/render/bootstrap
 
 echo "+++++ apply terraform +++++"
 cd ../../terraform

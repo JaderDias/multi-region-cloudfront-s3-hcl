@@ -1,7 +1,0 @@
-github.com/JaderDias/cloudfront-warmup v0.0.0-20221016165206-2f29c07f7295 h1:OWKgAD1W2Pj+UBstVq00A2J7gWh+Topt746QTlgVjxY=
-github.com/JaderDias/cloudfront-warmup v0.0.0-20221016165206-2f29c07f7295/go.mod h1:WU2VZpKSb/FvQMyptMUIxrgarUCaEoZvY0H4cyTBEkU=
-github.com/JaderDias/limiter v0.0.0-20220814090357-a195005b05c4 h1:HZGTLkNG/LHA/qf39AVzjdyGEMGHbNc2AhfmTGm02EE=
-github.com/JaderDias/limiter v0.0.0-20220814090357-a195005b05c4/go.mod h1:kCY3Ui6myc8xrhAYdiq0X/EE62nt2FGhIjiMhtZDboU=
-github.com/aws/aws-lambda-go v1.34.1 h1:M3a/uFYBjii+tDcOJ0wL/WyFi2550FHoECdPf27zvOs=
-github.com/aws/aws-lambda-go v1.34.1/go.mod h1:jwFe2KmMsHmffA1X2R09hH6lFzJQxzI8qK17ewzbQMM=
-golang.org/x/net v0.0.0-20220624214902-1bab6f366d9e/go.mod h1:XRhObCWvk6IyKnWLug+ECip1KBveYUHfp+8e9klMJ9c=
